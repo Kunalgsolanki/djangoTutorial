@@ -1,24 +1,126 @@
- {% extends  "base.html" %} 
+{% extends "base.html" %}
 {% block start %}
-<div  class="container mt-5"  >
+<div class="container mt-5">
 
-   <form class="col-6 mx-auto card p-3 shadow-lg" method="POST" enctype="multipart/form-data">
-    {% csrf_token %}  
-   <h2>Add Recipe</h1>
-   <hr/>
-  <div class="mb-3">
-    <label for="exampleInputEmail1" class="form-label">Receipe name</label>
-    <input type="text" class="form-control" required  name="receipe_name" >
+  <div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+      <form class="card p-4 shadow-lg" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <h2 class="mb-3">Add Recipe</h2>
+        <hr/>
+        <div class="mb-3">
+          <label class="form-label">Recipe Name</label>
+          <input type="text" class="form-control" required name="receipe_name">
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Recipe Description</label>
+          <textarea class="form-control" name="receipe_description" required rows="4"></textarea>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Recipe Image</label>
+          <div id="drop-area" class="border border-secondary rounded p-4 text-center" style="cursor: pointer;">
+            <p class="mb-2">Drag & drop an image here, or click to select</p>
+            <input type="file" name="receipe_image" id="fileElem" accept="image/*" class="d-none" required>
+            <img id="preview" class="img-fluid mt-2 d-none" style="max-height: 200px;" />
+          </div>
+        </div>
+        <button type="submit" class="btn btn-success w-100">Add Recipe</button>
+      </form>
+    </div>
   </div>
-  <div class="mb-3">
-    <label for="exampleInputPassword1" class="form-label"> Receipe Description</label>
-    <textarea class="form-control" name="receipe_description" required> </textarea>
+  <div class="mt-5">
+      <div class="mx-auto col-6">
+         <form action="" >
+        <div class="mb-3">
+         <label class="form-label">Serach Recipe </label>
+          <input type="text" name="search" class="form-control"  placeholder="Serach Recipe"  name="receipe_name">
+        </div>
+       <button type="submit" class="btn btn-primary">Submit</button>
+       </form>
+      </div>
   </div>
-   <div class="mb-3">
-    <label for="exampleInputPassword1" class="form-label"> Receipe Image</label>
-      <input type="file" class="form-control" name="receipe_image" required >
+
+  <div class="table-responsive mt-5">
+    <table class="table table-bordered align-middle text-center">
+      <thead class="table-dark">
+        <tr>
+          <th>#</th>
+          <th>Recipe Name</th>
+          <th>Recipe Description</th>
+          <th>Recipe Image</th>
+           <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for receipe in receipes %}
+        <tr>
+          <td>{{ forloop.counter }}</td>
+          <td>{{ receipe.receipe_name }}</td>
+          <td>{{ receipe.receipe_description }}</td>
+          <td>
+            <img src="/media/{{ receipe.receipe_image }}" class="img-fluid" style="max-height: 200px;" />
+          </td>
+            <td>
+              <a href="/delete_receipe/{{receipe.id}}" class="btn btn-danger" >Delete</a>
+              <a href="/update_receipe/{{receipe.id}}" class="btn btn-success mt-2" >Update</a>
+            </td>
+            
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
   </div>
-  <button type="submit" class="btn btn-success">Add Recipe</button>
-</form>
-</div> 
+
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const dropArea = document.getElementById("drop-area");
+  const fileInput = document.getElementById("fileElem");
+  const preview = document.getElementById("preview");
+
+
+  dropArea.addEventListener("click", () => fileInput.click());
+
+  fileInput.addEventListener("change", (e) => {
+    handleFiles(e.target.files);
+  });
+
+
+  ['dragenter', 'dragover'].forEach(eventName => {
+    dropArea.addEventListener(eventName, e => {
+      e.preventDefault();
+      dropArea.classList.add("bg-light");
+    });
+  });
+
+  ['dragleave', 'drop'].forEach(eventName => {
+    dropArea.addEventListener(eventName, e => {
+      e.preventDefault();
+      dropArea.classList.remove("bg-light");
+    });
+  });
+
+  dropArea.addEventListener("drop", (e) => {
+    const dt = e.dataTransfer;
+    const files = dt.files;
+    if (files.length > 0) {
+      fileInput.files = files; 
+      handleFiles(files);
+    }
+  });
+
+  function handleFiles(files) {
+    const file = files[0];
+    if (file && file.type.startsWith("image/")) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        preview.src = reader.result;
+        preview.classList.remove("d-none");
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+});
+</script>
 {% endblock start %}
