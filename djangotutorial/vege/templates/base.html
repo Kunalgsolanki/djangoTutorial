@@ -10,6 +10,29 @@
 </head>
 
 <body>
+    <nav class="navbar p-3 bg-dark shadow-lg bg-green fixed sticky-top ">
+  <div class="container-fluid">
+    <a class="navbar-brand text-success">VEGE</a>
+   <nav class="navbar sticky-top p-3 bg-dark shadow-lg">
+  <div class="container-fluid">
+    <a class="navbar-brand text-success">VEGE</a>
+
+    <div class="d-flex align-items-center gap-2">
+      {% if request.user.is_authenticated %}
+        <span class="navbar-text text-light me-2">
+          {{ request.user.username }}
+        </span>
+                <a href="/profile/" class="btn btn-outline-light">Profile</a>
+        <a href="/logout/" class="btn btn-danger">Logout</a>
+      {% else %}
+        <a href="/login/" class="btn btn-primary">Login</a>
+      {% endif %}
+    </div>
+  </div>
+</nav>
+
+  </div>
+</nav>
 {% block  start %}
 
 {% endblock   %}  
