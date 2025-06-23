@@ -1,20 +1,15 @@
+import uuid
 from django.db import models
 
-# Create your models here.
-class student (models.Model):
-    name = models.CharField(max_length=100)
-    age = models.IntegerField(null=True, blank=True)
-    email = models.EmailField(null=True, blank=True)
-    address = models.TextField(null=True, blank=True)
-    file = models.FileField()
-class product(models.Model):
-     name = models.CharField(max_length=255, default='Unnamed Product')
-     price = models.IntegerField(default=0)
+class BaseModel(models.Model):
+    uid = models.UUIDField(primary_key=True, default=uuid.uuid4(), editable=False)
+    created_at = models.DateField(auto_now_add=True)
+    updated_at = models.DateField(auto_now=True)
 
-class cars (models.Model):
-     car_name = models.CharField(max_length=100)
-     speed = models.IntegerField(default=50)
-     
-     def __str__(self) ->str:
-          return self.car_name
+    class Meta:
+        abstract = True
 
+class Todo(BaseModel):
+    todo_title = models.CharField(max_length=100)
+    todo_description = models.TextField()
+    is_done = models.BooleanField(default=False)
