@@ -17,6 +17,7 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
@@ -33,6 +34,7 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     "vege.apps.VegeConfig",
+    "trancelaionApp.apps.TrancelaionappConfig",
     "polls.apps.PollsConfig",
     'student.apps.StudentConfig',
     'django.contrib.admin',
@@ -42,16 +44,19 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
      'rest_framework',
+     'simple_history',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'simple_history.middleware.HistoryRequestMiddleware'
 ]
 
 ROOT_URLCONF = 'mysite.urls'
@@ -115,6 +120,7 @@ USE_I18N = True
 
 USE_TZ = True
 
+USE_L10N = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
@@ -131,3 +137,16 @@ MEDIA_URL ='/media/'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+from django.utils.translation import gettext_lazy as _
+
+LANGUAGES = [
+    ('en', 'English'),
+    ('hi', 'Hindi'),
+    ('fr', 'French'),
+    ('es', 'Spanish'),
+    # add more as needed
+]
+LOCALE_PATHS = [
+    BASE_DIR / 'locale',
+]

@@ -4,9 +4,13 @@ from vege.views import *
 from django.conf import settings
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.conf.urls.static import static
+from trancelaionApp.views import *
+from django.conf.urls.i18n import i18n_patterns
 
 urlpatterns = [
-        path('',include('student.urls')),
+    path('i18n/', include('django.conf.urls.i18n')),
+    path('',include('student.urls')),
+    path('transelation/',index,name="index"),
     path("polls/", include("polls.urls")),
     path("receipes/",receipes,name='receipes'),
     path("login/",login_page,name='login'),

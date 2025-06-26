@@ -1,0 +1,24 @@
+{% load i18n %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+   <form action="{% url 'set_language' %}" method="post">
+    {% csrf_token %}
+    <select name="language">
+        <option value="en">English</option>
+        <option value="hi">Hindi</option>
+        <option value="fr">French</option>
+    </select>
+    <button type="submit">Change Language</button>
+</form>
+
+
+    
+<p>{% trans "Welcome to the recipe site!" %}</p>
+</body>
+</html>
