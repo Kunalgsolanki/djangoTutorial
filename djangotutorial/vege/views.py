@@ -5,8 +5,10 @@ from django.contrib.auth.models import  User
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from rest_framework.decorators import api_view
 
 
+# Create Recipe Apis 
 @login_required
 def user_details(request):
     return render(request, "UserDetails.html")

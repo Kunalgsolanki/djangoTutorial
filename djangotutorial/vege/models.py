@@ -11,3 +11,4 @@ class Receipe(models.Model):
     history = HistoricalRecords()
     receipe_description = models.TextField(blank=True)
     receipe_image = models.ImageField(upload_to='receipes')
+    receipe_view_count = models.IntegerField(default=1)
