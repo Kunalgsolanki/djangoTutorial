@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+{% block start %}
+<div class="container mt-5">
+
+  <!-- Add Recipe Form -->
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="card shadow">
+        <div class="card-header bg-success text-white text-center">
+          <h3>Add a New Recipe</h3>
+        </div>
+        <div class="card-body">
+          <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="mb-3">
+              <label class="form-label">Recipe Name</label>
+              <input type="text" class="form-control" name="receipe_name" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Recipe Description</label>
+              <textarea class="form-control" name="receipe_description" rows="4" required></textarea>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Recipe Image</label>
+              <div id="drop-area" class="border border-secondary rounded p-4 text-center" style="cursor: pointer;">
+                <p class="mb-2">Drag & drop an image here, or click to select</p>
+                <input type="file" name="receipe_image" id="fileElem" accept="image/*" class="d-none" required>
+                <img id="preview" class="img-fluid mt-2 d-none" style="max-height: 200px;" />
+              </div>
+            </div>
+            <button type="submit" class="btn btn-success w-100">Add Recipe</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Search Box -->
+  <div class="row justify-content-center mt-4">
+    <div class="col-md-6">
+      <form>
+        <div class="input-group">
+          <input type="text" name="search" class="form-control" placeholder="Search Recipes..." />
+          <button class="btn btn-primary" type="submit">Search</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Recipe Cards -->
+  <div class="row mt-5">
+    {% for receipe in receipes %}
+    <div class="col-md-4 mb-4">
+      <div class="card h-100 shadow-sm">
+        <img src="/media/{{ receipe.receipe_image }}" class="card-img-top" alt="Recipe Image" style="height: 200px; object-fit: cover;">
+        <div class="card-body">
+          <h5 class="card-title">{{ receipe.receipe_name }}</h5>
+          <p class="text-muted mb-1"><small>Created by: {{ receipe.user.username }}</small></p>
+          <p class="card-text">{{ receipe.receipe_description|truncatewords:20 }}</p>
+        </div>
+        {% if request.user == receipe.user %}
+        <div class="card-footer d-flex justify-content-between">
+          <a href="/update_receipe/{{ receipe.id }}" class="btn btn-sm btn-success">Update</a>
+          <a href="/delete_receipe/{{ receipe.id }}" class="btn btn-sm btn-danger">Delete</a>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+    {% empty %}
+    <p class="text-center">No recipes found.</p>
+    {% endfor %}
+  </div>
+</div>
+
+<!-- JS for drag-drop preview -->
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const dropArea = document.getElementById("drop-area");
+  const fileInput = document.getElementById("fileElem");
+  const preview = document.getElementById("preview");
+
+  dropArea.addEventListener("click", () => fileInput.click());
+  fileInput.addEventListener("change", (e) => handleFiles(e.target.files));
+
+  ['dragenter', 'dragover'].forEach(event => {
+    dropArea.addEventListener(event, e => {
+      e.preventDefault();
+      dropArea.classList.add("bg-light");
+    });
+  });
+
+  ['dragleave', 'drop'].forEach(event => {
+    dropArea.addEventListener(event, e => {
+      e.preventDefault();
+      dropArea.classList.remove("bg-light");
+    });
+  });
+
+  dropArea.addEventListener("drop", (e) => {
+    const files = e.dataTransfer.files;
+    fileInput.files = files;
+    handleFiles(files);
+  });
+
+  function handleFiles(files) {
+    const file = files[0];
+    if (file && file.type.startsWith("image/")) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        preview.src = reader.result;
+        preview.classList.remove("d-none");
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+});
+</script>
+{% endblock %}
